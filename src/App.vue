@@ -1,28 +1,40 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <hello></hello>
+    <div class="main clearfix">
+      <div class="resume-container">
+        <resume></resume>
+      </div>
+      <div class="resume_nav-container">
+        456
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
+import resume from './components/resume/resume'
 
 export default {
   name: 'app',
   components: {
-    Hello
+    resume
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style rel="stylesheet/scss" lang="scss">
+.main {
+  width: 1024px;
+  margin: 100px auto;
+}
+
+.resume-container {
+  float: left;
+  width: 702px;
+}
+
+.resume_nav-container {
+  float: right;
+  width: 282px;
 }
 </style>

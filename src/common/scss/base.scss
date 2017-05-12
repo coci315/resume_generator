@@ -1,0 +1,19 @@
+html,
+body {
+  line-height: 1;
+  font-family: "PingFang SC", "Microsoft YaHei", "STHeitiSC-Light", "Helvetica-Light", "Helvetica Neue", Tahoma, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.clearfix {
+  &:before,
+  &:after {
+    display: table;
+    line-height: 0;
+    content: "";
+  }
+  &:after {
+    clear: both;
+  }
+}
