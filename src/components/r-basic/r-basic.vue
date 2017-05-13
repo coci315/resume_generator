@@ -9,56 +9,33 @@
     <div class="r-basic_bd">
       <i class="bd_bg_left"></i>
       <i class="bd_bg_right"></i>
-      <div class="name-wrapper" @mouseover="isHover=true" @mouseout="isHover=false" v-show="!isShowEditor">
-        <div class="name" :class="{hover:isHover}">{{name}}</div>
-        <span class="edit" v-show="isHover" @click="showEditor">
-          <i class="icon icon-edit"></i>
-          <span>编辑</span>
-        </span>
-      </div>
-      <form class="name-editor" v-show="isShowEditor">
-        <input type="text" name="name" autocomplete="off" v-model="editName" class="name-input">
-        <input type="button" class="save" value="保存" @click="save">
-        <a href="javascript:;" class="cancel" @click="cancleSave">取消</a>
-      </form>
+      <s-line-editor field="name" :name="basicName" size="large"></s-line-editor>
+      <s-line-editor field="intro" :name="basicIntro" size="normal"></s-line-editor>
     </div>
   </div>
 </template>
 
 <script>
   import { saveToLocal, loadFromLocal } from '@/common/js/store.js'
+  import sLineEditor from '../base/s-line-editor/s-line-editor'
 
   const TWO_MB = 2 * 1024 * 1024
   
   export default {
     name: 'r-basic',
+    components: {
+      sLineEditor
+    },
     data () {
       return {
         avatarSrc: loadFromLocal('basic', 'avatar', require('./basic_avatar_default.png')),
-        isHover: false,
-        isShowEditor: false,
-        name: loadFromLocal('basic', 'name', '姓名'),
-        editName: ''
+        basicName: loadFromLocal('basic', 'name', '姓名'),
+        basicIntro: loadFromLocal('basic', 'intro', '好好学习，天天向上')
       }
     },
     methods: {
-      cancleSave () {
-        this.isShowEditor = false
-      },
-
       clickHandle () {
         this.$refs.upload.click()
-      },
-
-      save () {
-        this.name = this.editName
-        saveToLocal('basic', 'name', this.name)
-        this.isShowEditor = false
-      },
-
-      showEditor () {
-        this.editName = this.name
-        this.isShowEditor = true
       },
 
       uploadHandle (event) {
@@ -150,74 +127,5 @@
 .bd_bg_right {
   right: -2px;
   background-position: -40px 0;
-}
-
-.name-wrapper {
-  position: relative;
-  width: 604px;
-  margin: 0 auto;
-  .name {
-    width: 100%;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    font-size: 30px;
-    color: #333;
-    &.hover {
-      background-color: #fefef2;
-    }
-  }
-  .edit {
-    position: absolute;
-    top: 0;
-    right: 10px;
-    height: 40px;
-    line-height: 40px;
-    font-size: 16px;
-    color: #00b38a;
-    cursor: pointer;
-    &>* {
-      display: inline-block;
-      vertical-align: middle;
-    }
-  }
-}
-
-.name-editor {
-  padding-left: 156px;
-  height: 40px;
-  &>* {
-    vertical-align: middle;
-  }
-  .name-input {
-    width: 368px;
-    height: 40px;
-    padding: 0 10px;
-    margin-right: 10px;
-    border: 1px solid rgb(238, 239, 241);
-    border-radius: 3px;
-    text-align: center;
-    font-size: 30px;
-    line-height: 40px;
-  }
-  .save {
-    display: inline-block;
-    padding: 0 11px;
-    margin-right: 12px;
-    border-radius: 3px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    font-size: 14px;
-    color: #fff;
-    background-color: #00b38a;
-    cursor: pointer;
-  }
-  .cancel {
-    color: #00b38a;
-    height: 30px;
-    line-height: 30px;
-    font-size: 14px;
-  }
 }
 </style>
