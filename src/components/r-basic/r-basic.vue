@@ -11,6 +11,7 @@
       <i class="bd_bg_right"></i>
       <s-line-editor field="name" :name="basicName" size="large"></s-line-editor>
       <s-line-editor field="intro" :name="basicIntro" size="normal"></s-line-editor>
+      <basic-info></basic-info>
     </div>
   </div>
 </template>
@@ -18,13 +19,15 @@
 <script>
   import { saveToLocal, loadFromLocal } from '@/common/js/store.js'
   import sLineEditor from '../base/s-line-editor/s-line-editor'
+  import basicInfo from '../basic-info/basic-info'
 
   const TWO_MB = 2 * 1024 * 1024
   
   export default {
     name: 'r-basic',
     components: {
-      sLineEditor
+      sLineEditor,
+      basicInfo
     },
     data () {
       return {

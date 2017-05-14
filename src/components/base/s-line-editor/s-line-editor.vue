@@ -3,7 +3,7 @@
     <div class="name-wrapper" @mouseover="isHover=true" @mouseout="isHover=false" v-show="!isShowEditor">
       <div class="name" :class="{hover:isHover}">{{name}}</div>
       <span class="edit" v-show="isHover" @click="showEditor">
-        <i class="icon icon-edit"></i>
+        <i class="icon-edit"></i>
         <span>编辑</span>
       </span>
     </div>
@@ -135,7 +135,7 @@
   }
   .name,
   .name-input {
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 

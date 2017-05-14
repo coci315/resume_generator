@@ -1,9 +1,15 @@
 html,
 body {
   line-height: 1;
+  font-size: 14px;
   font-family: "PingFang SC", "Microsoft YaHei", "STHeitiSC-Light", "Helvetica-Light", "Helvetica Neue", Tahoma, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  color: #fff;
+  background-color: #00b38a;
 }
 
 .clearfix {
