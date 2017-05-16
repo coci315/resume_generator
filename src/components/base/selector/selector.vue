@@ -61,7 +61,7 @@
   }
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
+<style rel="stylesheet/scss" lang="scss" scoped>
 .drop-enter-active,
 .drop-leave-active {
   transition: all .3s;

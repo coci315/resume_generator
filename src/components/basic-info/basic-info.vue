@@ -51,7 +51,7 @@
       </div>
       <div class="edit-wrap">
         <label>所在城市</label>
-        <city-selector></city-selector>
+        <city-selector :passValue="city"></city-selector>
       </div>
     </div>
   </div>
@@ -181,6 +181,7 @@
         selectedMonthIndex: -1,
         selectedEducationIndex: 1,
         selectedSeniorityIndex: 6,
+        city: 'tianjin',
         seniority: 6,
         sex: 'male'
       }
