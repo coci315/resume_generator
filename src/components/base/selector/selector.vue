@@ -18,6 +18,10 @@
   export default {
     name: 'selector',
     props: {
+      eventName: {
+        type: String,
+        default: 'changeIndex'
+      },
       options: {
         type: Array,
         default () {
@@ -40,18 +44,22 @@
     data () {
       return {
         isShowOptions: false,
-        label: ''
+        tempIndex: ''
+      }
+    },
+    computed: {
+      label () {
+        if (this.tempIndex < 0) return ''
+        return this.options[this.tempIndex].label
       }
     },
     created () {
-      if (this.selectedIndex < 0) {
-        return
-      }
-      this.label = this.options[this.selectedIndex].label
+      this.tempIndex = this.selectedIndex
     },
     methods: {
       changeValue (index) {
-        this.label = this.options[index].label
+        this.tempIndex = index
+        this.$emit(this.eventName, index)
         this.isShowOptions = false
       },
       toggleShowOptions () {
@@ -76,6 +84,7 @@
 
 .selector {
   display: inline-block;
+  vertical-align: middle;
 }
 
 .wrapper {

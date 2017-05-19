@@ -10,8 +10,8 @@
           <ul class="provinces" ref="provinces">
             <li v-for="(province,index) in provinces" :class="{active: selectedProvinceIndex===index}" @click.stop="changeProvince(index)">{{province.label}}</li>
           </ul>
-          <ul class="cities">
-            <li v-for="(city,index) in provinces[selectedProvinceIndex].cities" :class="{active: city.value===value}" @click.stop="changeCity(index)">{{city.label}}</li>
+          <ul class="cities" v-if="provinces[selectedProvinceIndex] && provinces[selectedProvinceIndex].cities">
+            <li v-for="(city,index) in provinces[selectedProvinceIndex].cities" :class="{active: city.label===label}" @click.stop="changeCity(index)">{{city.label}}</li>
           </ul>
         </div>
       </transition>
@@ -23,9 +23,9 @@
   const provinceLiHeight = 34
 
   export default {
-    name: 'selector',
+    name: 'city-selector',
     props: {
-      passValue: {
+      passLabel: {
         type: String
       },
       selectorClass: {
@@ -41,7 +41,7 @@
       helperIndex () {
         for (let i = 0; i < this.provinces.length; i++) {
           for (let j = 0; j < this.provinces[i].cities.length; j++) {
-            if (this.provinces[i].cities[j].value === this.value) {
+            if (this.provinces[i].cities[j].label === this.label) {
               return i + '-' + j
             }
           }
@@ -1289,12 +1289,13 @@
       }
     },
     created () {
-      this.value = this.passValue
+      this.label = this.passLabel
       this.getIndex()
       if (this.selectedProvinceIndex < 0) {
+        this.label = ''
         return
       }
-      this.label = this.provinces[this.selectedProvinceIndex].cities[this.selectedCityIndex].label
+      this.value = this.provinces[this.selectedProvinceIndex].cities[this.selectedCityIndex].value
     },
     methods: {
       changeProvince (index) {
@@ -1304,6 +1305,7 @@
         this.selectedCityIndex = index
         this.label = this.provinces[this.selectedProvinceIndex].cities[this.selectedCityIndex].label
         this.value = this.provinces[this.selectedProvinceIndex].cities[this.selectedCityIndex].value
+        this.$emit('changeCity', this.label)
         this.isShowOptions = false
       },
       getIndex () {

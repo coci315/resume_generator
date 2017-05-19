@@ -1,10 +1,10 @@
 <template>
   <div class="my-radio">
-    <span class="radio-wrap" :class="{active:selectedIndex===0}" @click="selectedIndex=0">
+    <span class="radio-wrap" :class="{active:selectedIndex===0}" @click="changeIndex(0)">
       <i class="icon-male"></i>
       <span>男</span>
     </span>
-    <span class="radio-wrap" :class="{active:selectedIndex===1}" @click="selectedIndex=1">
+    <span class="radio-wrap" :class="{active:selectedIndex===1}" @click="changeIndex(1)">
       <i class="icon-female"></i>
       <span>女</span>
     </span>
@@ -15,9 +15,23 @@
   export default {
     name: 'my-radio',
     props: {
-      selectedIndex: {
+      passIndex: {
         type: Number,
         default: 0
+      }
+    },
+    data () {
+      return {
+        selectedIndex: ''
+      }
+    },
+    created () {
+      this.selectedIndex = this.passIndex
+    },
+    methods: {
+      changeIndex (index) {
+        this.selectedIndex = index
+        this.$emit('changeIndex', index)
       }
     }
   }

@@ -12,9 +12,10 @@
         </div>
         <div class="info">
           <i class="icon icon-mine"></i>
-          <span>{{sex | formatSex}}</span>
+          <span>{{sex}}</span>
+          <span>{{age}}</span>
           <span>{{education}}</span>
-          <span>{{seniority}}年工作经验</span>
+          <span>{{seniorityDesc}}</span>
           <span>{{location}}</span>
         </div>
         <div class="info info2">
@@ -25,33 +26,45 @@
         </div>
       </div>
     </div>
-    <div class="editor-part" v-show="isShowEditor">
+    <div class="editor-part" v-if="isShowEditor">
       <div class="edit-wrap">
         <label>显示身份</label>
-        <selector :options="optsIdentity"></selector>
+        <selector :options="optsIdentity" :selectedIndex="selectedIdentityIndex" @changeIndex="tempSaveIdentityIndex"></selector>
       </div>
       <div class="edit-wrap">
         <label>性别</label>
-        <my-radio></my-radio>
+        <my-radio :passIndex="selectedSexIndex" @changeIndex="tempSaveSexIndex"></my-radio>
       </div>
       <div class="edit-wrap">
         <label>生日</label>
         <div class="selectors">
-          <selector :options="optsYears" :selectedIndex="selectedYearIndex" size="small" selectorClass="selector_year"></selector>
-          <selector :options="optsMonths" :selectedIndex="selectedMonthIndex" size="extraSmall"></selector>
+          <selector :options="optsYears" :selectedIndex="selectedYearIndex" size="small" selectorClass="selector_year" @changeIndex="tempSaveYearIndex"></selector>
+          <selector :options="optsMonths" :selectedIndex="selectedMonthIndex" size="extraSmall" @changeIndex="tempSaveMonthIndex"></selector>
         </div>
       </div>
       <div class="edit-wrap">
         <label>最高学历</label>
-        <selector :options="optsEducation" :selectedIndex="selectedEducationIndex"></selector>
+        <selector :options="optsEducation" :selectedIndex="selectedEducationIndex" @changeIndex="tempSaveEducationIndex"></selector>
       </div>
       <div class="edit-wrap">
         <label>工作年限</label>
-        <selector :options="optsSeniority" :selectedIndex="selectedSeniorityIndex"></selector>
+        <selector :options="optsSeniority" :selectedIndex="selectedSeniorityIndex" @changeIndex="tempSaveSeniorityIndex"></selector>
       </div>
       <div class="edit-wrap">
         <label>所在城市</label>
-        <city-selector :passValue="city"></city-selector>
+        <city-selector :passLabel="location" @changeCity="tempSaveLocation"></city-selector>
+      </div>
+      <div class="edit-wrap">
+        <label>手机号码</label>
+        <input type="text" class="my-input" v-model="tempPhone">
+      </div>
+      <div class="edit-wrap">
+        <label>联系邮箱</label>
+        <input type="text" class="my-input" v-model="tempMail">
+      </div>
+      <div class="edit-wrap btn-wrap">
+        <input type="button" class="save-large" value="保存" @click="save">
+        <a href="javascript:;" class="cancel-large" @click="cancleSave">取消</a>
       </div>
     </div>
   </div>
@@ -108,51 +121,51 @@
   const optsSeniority = [
     {
       label: '应届毕业生',
-      value: 0
+      value: '应届毕业生'
     },
     {
       label: '1年',
-      value: 1
+      value: '1年'
     },
     {
       label: '2年',
-      value: 2
+      value: '2年'
     },
     {
       label: '3年',
-      value: 3
+      value: '3年'
     },
     {
       label: '4年',
-      value: 4
+      value: '4年'
     },
     {
       label: '5年',
-      value: 5
+      value: '5年'
     },
     {
       label: '6年',
-      value: 6
+      value: '6年'
     },
     {
       label: '7年',
-      value: 7
+      value: '7年'
     },
     {
       label: '8年',
-      value: 8
+      value: '8年'
     },
     {
       label: '9年',
-      value: 9
+      value: '9年'
     },
     {
       label: '10年',
-      value: 10
+      value: '10年'
     },
     {
       label: '10年以上',
-      value: 100
+      value: '10年以上'
     }
   ]
 
@@ -165,8 +178,6 @@
     },
     data () {
       return {
-        education: '本科',
-        identity: 'XX工程师 · XXXX公司',
         isHover: false,
         isShowEditor: false,
         location: '杭州',
@@ -180,15 +191,104 @@
         selectedYearIndex: -1,
         selectedMonthIndex: -1,
         selectedEducationIndex: 1,
-        selectedSeniorityIndex: 6,
-        city: 'tianjin',
-        seniority: 6,
-        sex: 'male'
+        selectedSeniorityIndex: 4,
+        selectedSexIndex: 0,
+        selectedIdentityIndex: 0,
+        tempLocation: '',
+        tempMail: '',
+        tempPhone: '',
+        tempSeniorityIndex: '',
+        tempEducationIndex: '',
+        tempYearIndex: '',
+        tempMonthIndex: '',
+        tempSexIndex: '',
+        tempIdentityIndex: ''
+      }
+    },
+    computed: {
+      seniority () {
+        if (this.selectedSeniorityIndex < 0) return ''
+        return this.optsSeniority[this.selectedSeniorityIndex].label
+      },
+      seniorityDesc () {
+        if (this.seniority === '') return ''
+        return this.seniority === '应届毕业生' ? this.seniority : this.seniority + '工作经验'
+      },
+      education () {
+        if (this.selectedEducationIndex < 0) return ''
+        return this.optsEducation[this.selectedEducationIndex].label
+      },
+      birthYear () {
+        if (this.selectedYearIndex < 0) return ''
+        return this.optsYears[this.selectedYearIndex].label
+      },
+      birthMonth () {
+        if (this.selectedMonthIndex < 0) return ''
+        return this.optsMonths[this.selectedMonthIndex].label
+      },
+      age () {
+        if (this.birthYear === '' || this.birthMonth === '') return ''
+        const date = new Date()
+        const year = date.getFullYear() - this.birthYear
+        return date.getMonth + 1 < this.birthMonth ? (year - 1) + '岁' : year + '岁'
+      },
+      sex () {
+        if (this.selectedSexIndex < 0) return ''
+        return this.selectedSexIndex === 0 ? '男' : '女'
+      },
+      identity () {
+        if (this.selectedIdentityIndex < 0) return ''
+        return this.optsIdentity[this.selectedIdentityIndex].label
       }
     },
     methods: {
+      cancleSave () {
+        this.isShowEditor = false
+      },
+      tempSaveLocation (val) {
+        this.tempLocation = val
+      },
+      tempSaveSeniorityIndex (index) {
+        this.tempSeniorityIndex = index
+      },
+      tempSaveEducationIndex (index) {
+        this.tempEducationIndex = index
+      },
+      tempSaveYearIndex (index) {
+        this.tempYearIndex = index
+      },
+      tempSaveMonthIndex (index) {
+        this.tempMonthIndex = index
+      },
+      tempSaveSexIndex (index) {
+        this.tempSexIndex = index
+      },
+      tempSaveIdentityIndex (index) {
+        this.tempIdentityIndex = index
+      },
       showEditor () {
+        this.tempLocation = this.location
+        this.tempPhone = this.phone
+        this.tempMail = this.mail
+        this.tempSeniorityIndex = this.selectedSeniorityIndex
+        this.tempEducationIndex = this.selectedEducationIndex
+        this.tempYearIndex = this.selectedYearIndex
+        this.tempMonthIndex = this.selectedMonthIndex
+        this.tempSexIndex = this.selectedSexIndex
+        this.tempIdentityIndex = this.selectedIdentityIndex
         this.isShowEditor = true
+      },
+      save () {
+        this.location = this.tempLocation
+        this.phone = this.tempPhone
+        this.mail = this.tempMail
+        this.selectedSeniorityIndex = this.tempSeniorityIndex
+        this.selectedEducationIndex = this.tempEducationIndex
+        this.selectedYearIndex = this.tempYearIndex
+        this.selectedMonthIndex = this.tempMonthIndex
+        this.selectedSexIndex = this.tempSexIndex
+        this.selectedIdentityIndex = this.tempIdentityIndex
+        this.isShowEditor = false
       }
     }
   }
@@ -266,6 +366,32 @@
   }
   .edit-wrap {
     margin-bottom: 9px;
+  }
+  .btn-wrap {
+    padding-top: 34px;
+  }
+  .my-input {
+    width: 379px;
+    height: 46px;
+    padding-left: 17px;
+    border: 1px solid #f1f3f9;
+    border-radius: 3px;
+    background-color: #fff;
+  }
+  .save-large {
+    display: inline-block;
+    padding: 12px 18px;
+    border-radius: 3px;
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+    background-color: #00b38a;
+    cursor: pointer;
+  }
+  .cancel-large {
+    color: #00b38a;
+    padding: 12px 18px;
+    font-size: 16px;
   }
 }
 </style>
